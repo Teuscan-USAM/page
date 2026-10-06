@@ -88,5 +88,41 @@ SELECT * FROM fos_user_user fuu;
 SELECT * FROM mnt_expediente me where numero = '2780-22';
 SELECT * FROM sec_historial_clinico shc where shc.id_numero_expediente = 111834;
 SELECT * FROM sec_interconsulta si where si.id_historial_clinico = 1786285;
-SELECT * FROM sec_interconsulta_respuesta sir where sir.id_interconsulta = 10980;</code></pre>
+SELECT * FROM sec_interconsulta_respuesta sir where sir.id_interconsulta = 10980;
+
+CASOS ESPECIALES:
+1. No aparece la alta efectiva
+WITH    ingresos_unicos AS(
+        SELECT id AS id_ingreso FROM sec_ingreso
+                INTERSECT
+                SELECT id_ingreso FROM sec_egreso
+                    )
+                    SELECT DISTINCT C.numero AS numero_cama,D.numero AS numero_expediente,G.fecha as fecha_ingreso,G.hora AS hora_ingreso,
+                    A.fecha_hora_egreso,H.nombreempleado,D.id as id_expediente,E.id AS id_paciente,
+                    INITCAP(CONCAT_WS(' ', CONCAT(COALESCE(D.numero, ''), ' - '), E.primer_nombre, E.segundo_nombre, E.tercer_nombre, E.primer_apellido, E.segundo_apellido, E.apellido_casada)) AS nombre_paciente,
+                    CASE WHEN B.nombre_ambiente IS NULL THEN I.nombre ELSE B.nombre_ambiente END as nombre_ambiente,
+                    A.id_condicion_persona,A.id AS id_egreso, F.id AS id_mov_paciente,
+                    K.nombreempleado as empleado_alta_efectiva,A.fecha_indicacion_egreso,D.id_paciente,G.id as id_ingreso,
+                    A.fecha_defuncion, A.hora_defuncion, A.fecha_hora_registra fecha_indicada
+                    FROM sec_egreso A
+                    INNER JOIN mnt_aten_area_mod_estab B ON (A.id_aten_area_mod_estab = B.id )
+                    INNER JOIN sec_mov_paciente F ON (F.id_ingreso=A.id_ingreso)
+                    INNER JOIN mnt_camas_servicio C ON ( C.id = F.id_cama_servicio )
+                    INNER JOIN sec_ingreso G ON (G.id = A.id_ingreso )
+                    INNER JOIN ingresos_unicos GG ON (G.id = GG.id_ingreso )
+                    INNER JOIN mnt_expediente D ON ( G.id_expediente = D.id )
+                    INNER JOIN mnt_paciente E ON (D.id_paciente = E.id )
+                    INNER JOIN mnt_empleado H ON (A.id_empleado = H.id)
+                    INNER JOIN ctl_atencion I ON (B.id_atencion = I.id)
+                    LEFT JOIN fos_user_user J ON (A.id_usuario_alta_efectiva = J.id)
+                    LEFT JOIN mnt_empleado K ON (J.id_empleado = K.id)
+                WHERE F.id_tipo_egreso = 3 and d.id = 123307
+                ORDER BY nombre_ambiente,A.fecha_hora_egreso DESC;
+
+		select * from sec_egreso se where se.id_ingreso = 204942;
+		
+				select * from sec_mov_paciente se where se.id_ingreso = 204942;
+
+
+</code></pre>
 </main></body></html>
