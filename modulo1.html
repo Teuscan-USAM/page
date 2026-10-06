@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Módulo 1 | SSH Tool</title><link rel="stylesheet" href="styles.css"></head>
+<body><main class="module-page">
+<nav class="site-nav"><a class="brand" href="index.html">SSH<span>/</span>TOOL</a><div class="nav-links"><a class="nav-link" href="index.html">Claves SSH</a><a class="nav-link is-active" href="soporte.html">Soporte técnico</a></div></nav>
+<p class="eyebrow">SCRIPTS SOLUCIONES SIS</p><h1>Módulo 1</h1><p class="intro">Utilidades generales para dar soporte a los tickets del SIS.</p><hr>
+<div><p class="eyebrow">Funcionalidades útiles del SIS</p><p>Agregar en la dirección URL: <code>sis-soporte.php/</code><br>Ejemplo: <code>https://sis-hzacatecoluca.salud.gob.sv/sis-soporte.php/admin/</code></p></div>
+<div><p class="eyebrow">Cambiar a otro usuario</p><p>Agregar al final de la URL: <code>?_switch_user=user</code><br>Para salir: <code>?_switch_user=_exit</code></p></div>
+<div><p class="eyebrow">Variables y consultas SQL básicas para PostgreSQL</p><p>Usa nombres de tablas y columnas reales de tu módulo. Utiliza consultas parametrizadas y no concatene valores recibidos del usuario.</p>
+<pre><code>-- Consultar y filtrar
+SELECT id, nombre, estado, created_at
+FROM usuarios
+ORDER BY created_at DESC;
+
+SELECT id, nombre, correo FROM usuarios
+WHERE nombre ILIKE '%ana%' OR correo ILIKE '%@salud.gob.sv%';
+
+-- INNER JOIN
+SELECT t.id, t.titulo, u.nombre AS usuario
+FROM tickets AS t
+INNER JOIN usuarios AS u ON u.id = t.usuario_id
+WHERE t.estado = 'abierto' ORDER BY t.id DESC;
+
+-- LEFT JOIN
+SELECT u.id, u.nombre, COUNT(t.id) AS total_tickets
+FROM usuarios AS u LEFT JOIN tickets AS t ON t.usuario_id = u.id
+GROUP BY u.id, u.nombre ORDER BY total_tickets DESC;
+
+-- Insertar, actualizar y borrar
+INSERT INTO tickets (titulo, estado, usuario_id)
+VALUES ('Revisar acceso al SIS', 'abierto', 10) RETURNING id;
+
+UPDATE tickets SET estado = 'cerrado', updated_at = NOW()
+WHERE id = 25 RETURNING id, estado, updated_at;
+
+DELETE FROM tickets WHERE id = 25 RETURNING id;</code></pre>
+<p><strong>Consejo:</strong> antes de un <code>UPDATE</code> o <code>DELETE</code>, ejecuta el mismo <code>WHERE</code> con <code>SELECT</code>.</p></div>
+</main></body></html>

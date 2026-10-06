@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Módulo 2 | SSH Tool</title><link rel="stylesheet" href="styles.css"></head>
+<body><main class="module-page">
+<nav class="site-nav"><a class="brand" href="index.html">SSH<span>/</span>TOOL</a><div class="nav-links"><a class="nav-link" href="index.html">Claves SSH</a><a class="nav-link is-active" href="soporte.html">Soporte técnico</a></div></nav>
+<p class="eyebrow">SCRIPTS SOLUCIONES SIS</p><h1>Módulo 2</h1><p class="intro">Encuentra soluciones a los problemas de HCP.</p><hr>
+<div><p class="eyebrow">Consultas SQL básicas para PostgreSQL</p><p>Tablas de los HCP funcionales o ligadas a cada uno de los partos.</p>
+<pre><code>-- Tabla principal
+SELECT * FROM sec_clap_perinatal scp WHERE id = 16475;
+
+-- Parto o aborto relacionado
+SELECT * FROM sec_parto_aborto_perinatal spap
+WHERE spap.id_clap_perinatal = 16475;
+
+-- Datos del recién nacido
+SELECT * FROM sec_recien_nacido_perinatal srnp
+WHERE srnp.id_parto_aborto = 14786;
+
+-- Datos del nacimiento
+SELECT * FROM sec_nacimiento_perinatal snp
+WHERE snp.id_parto_aborto = 14786;
+
+-- Partograma
+SELECT * FROM sec_partograma sp
+WHERE sp.id_clap_perinatal = 17674;</code></pre></div>
+</main></body></html>
