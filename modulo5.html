@@ -4,63 +4,89 @@
 <body><main class="module-page">
 <nav class="site-nav"><a class="brand" href="index.html">SSH<span>/</span>TOOL</a><div class="nav-links"><a class="nav-link" href="index.html">Claves SSH</a><a class="nav-link is-active" href="soporte.html">Soporte técnico</a></div></nav>
 <p class="eyebrow">Tablas del SIS que son importantes</p><h1>Módulo 5</h1><p class="intro">Anotaciones sobre las tablas del SIS para darles soporte.</p><hr>
-<pre><code>-- 1. PACIENTES Y EXPEDIENTES
-SELECT * FROM mnt_paciente ORDER BY fecha_registro DESC LIMIT 10;
-SELECT * FROM mnt_expediente WHERE numero = '9674-11';
+<pre><code>-- -- 1. PACIENTES Y EXPEDIENTES
+SELECT * FROM mnt_paciente ORDER BY fecha_registro DESC LIMIT (10); -- ver el nombre y datos del paciente
+SELECT * FROM mnt_expediente WHERE numero = '9674-11'; -- ver el expediente del paciente
+SELECT * FROM sec_historial_clinico WHERE id_numero_expediente = 9674; -- manda a llamar el historial clinico del paciente y de acuerdo al id_historial_clinico 
 
--- 2. CITAS Y DISTRIBUCIÓN
-SELECT * FROM cit_citas_dia ORDER BY fechahorareg DESC LIMIT 10;
-SELECT * FROM cit_citas_dia WHERE id_estado = 11 LIMIT 20;
+-- 2. CITAS Y DISTRIBUCIÓN DE CITA
+SELECT * FROM cit_citas_dia ORDER BY fechahorareg DESC LIMIT (10);
+SELECT * FROM cit_citas_dia WHERE id_estado = 11 LIMIT (20);
+SELECT * FROM cit_citas_dia WHERE id_expediente = 47245;
 SELECT * FROM cit_tipocita;
 SELECT * FROM cit_estado_cita;
+SELECT * FROM ctl_origen_cita ORDER BY id ASC;
 SELECT * FROM cit_distribucion WHERE id = 51872;
+SELECT * FROM cit_tipo_distribucion;
+SELECT * FROM cit_distribucion_procedimiento;
 SELECT * FROM cit_citas_procedimientos;
+SELECT * FROM sec_agendamiento_dia sad;
+SELECT * FROM sec_historial_cita_dia_subsec;
 
--- 3. HISTORIA CLÍNICA Y ATENCIÓN
+-- 3. HISTORIA CLINICA Y ATENCIÓN
 SELECT * FROM sec_historial_clinico;
 SELECT * FROM ctl_estado_historia_clinica;
-SELECT * FROM sec_motivo_consulta;
-SELECT * FROM sec_signos_vitales_;
-SELECT * FROM sec_diagnostico_paciente;
+SELECT * FROM ctl_tipo_historia_clinica cthc;
+SELECT * FROM sec_motivo_consulta smc;
+SELECT * FROM sec_signos_vitales_;          -- Tabla principal de signos vitales
+SELECT * FROM sec_signos_vitales_prepa;     -- Tabla de signos vitales preoperatorios de las enfermeras
+SELECT * FROM sec_diagnostico_paciente sdp;
+SELECT * FROM sec_mov_paciente;
+SELECT * FROM ctl_tipo_movimiento_paciente;
+SELECT * FROM ctl_tipo_consulta;
 SELECT * FROM ctl_atencion;
 
 -- 4. EMERGENCIA Y TRIAGE
 SELECT * FROM sec_emergencia;
-SELECT * FROM eme_triage;
+SELECT * FROM eme_triage et;
 SELECT * FROM eme_obstetricia;
 
 -- 5. MATERNO / PERINATAL
-SELECT * FROM sec_dato_embarazo;
-SELECT * FROM sec_clap_perinatal;
-SELECT * FROM sec_partograma;
-SELECT * FROM sec_parto_aborto_perinatal;
-SELECT * FROM sec_nacimiento_perinatal;
-SELECT * FROM sec_recien_nacido_perinatal;
+SELECT * FROM sec_dato_embarazo where id_historial_clinico = 1092683;          -- Aqui esta la formula obstetrica
+SELECT * FROM sec_clap_perinatal scp;
+SELECT * FROM sec_partograma sp;
+SELECT * FROM public.sec_parto_aborto_perinatal;
+SELECT * FROM sec_nacimiento_perinatal snp;
+SELECT * FROM sec_recien_nacido_perinatal srnp;
 
--- 6. PROCEDIMIENTOS Y CIRUGÍAS
+-- 6. DIAGNOSTICOS, PROCEDIMIENTOS Y CIRUGÍAS
 SELECT * FROM mnt_procedimiento_establecimiento;
-SELECT * FROM sec_cirugia;
-SELECT * FROM sec_cirugia_reporte;
-SELECT * FROM sec_cirugia_reporte_procedimiento;
+SELECT * FROM public.mnt_tipo_procedimiento AS mtp;        
+SELECT * FROM where codigo ilike '%93%'; -- ver codigo del procedimiento
+SELECT * FROM sec_diagnostico_paciente sdp; -- diganosticos de los pacientes
+SELECT * FROM sec_cirugia sc;
+SELECT * FROM sec_cirugia_reporte scr; -- Tabla donde se guarda los reportes de la operación
+SELECT * FROM sec_cirugia_reporte_procedimiento scrp;
+SELECT * FROM ctl_piezas_intervenidas;
+
+
+SELECT * FROM cit_distribucion_procedimiento where yrs = 2026 and mes in(10,11,12) and id_empleado in (00,123,456,789);
+--Por si tiene una cita de procedimiento y se quiere eliminar, primero se debe eliminar la cita de procedimiento y luego la distribución 
+SELECT * FROM cit_citas_procedimientos ccp where ccp.id_distribucion_procedimiento = 6979 and id_estado = 9;
 
 -- 7. ENFERMERÍA, RECETAS Y DIETAS
-SELECT * FROM sec_anotacion_enfermeria;
-SELECT * FROM sec_vacunacion_aplicada;
+SELECT * FROM sec_anotacion_enfermeria sae;
+SELECT * FROM sec_vacunacion_aplicada sva;
 SELECT * FROM farm_recetas WHERE idhistorialclinico = 1092683;
 SELECT * FROM hos_solicitud_dieta_paciente WHERE justificacion_anulacion IS NULL;
 
--- 8. OTROS SERVICIOS
-SELECT * FROM pat_solicitudes_estudio;
-SELECT * FROM sec_remision_paciente;
-SELECT * FROM sec_censo_diario;
+-- 8. OTROS SERVICIOS (Patología, Fisioterapia, Remisión, Censo)
+SELECT * FROM pat_solicitudes_estudio pse;
+SELECT * FROM sec_amputaciones_fisioterapia saf;
+SELECT * FROM public.sec_remision_paciente;
+SELECT * FROM public.sec_censo_diario;
 
--- 9. CATÁLOGOS Y MANTENIMIENTOS
+-- 9. CATÁLOGOS Y MANTENIMIENTOS DEL SISTEMA
 SELECT * FROM ctl_establecimiento WHERE nombre ILIKE '%Hospital Na %';
+SELECT * FROM mnt_aten_area_mod_estab;
 SELECT * FROM mnt_empleado;
+SELECT * FROM mnt_tipo_empleado;
 SELECT * FROM ctl_prioridad;
-SELECT * FROM fos_user_user;
+SELECT * FROM fos_user_user fuu;    
 
 -- 10. INTERCONSULTAS Y TELEMEDICINA
-SELECT * FROM sec_interconsulta;
-SELECT * FROM sec_interconsulta_respuesta;</code></pre>
+SELECT * FROM mnt_expediente me where numero = '2780-22';
+SELECT * FROM sec_historial_clinico shc where shc.id_numero_expediente = 111834;
+SELECT * FROM sec_interconsulta si where si.id_historial_clinico = 1786285;
+SELECT * FROM sec_interconsulta_respuesta sir where sir.id_interconsulta = 10980;</code></pre>
 </main></body></html>
