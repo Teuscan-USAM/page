@@ -166,9 +166,11 @@ button:hover:not(:disabled) { filter: brightness(1.08); }
 .status-pill { color: var(--accent); }
 .status-dot { background: var(--accent); border-radius: 50%; display: inline-block; height: 7px; width: 7px; }
 .credentials-list { display: grid; gap: 10px; margin-top: 20px; }
+.persistent-credentials { margin-top: 24px; }
 .credential-card { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 9px; padding: 14px; }
 .credential-label { color: var(--muted); }
-.credential-line strong { flex: 1; overflow-wrap: anywhere; }
+.credential-line strong, .credential-line a { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.credential-line .copy-button { flex-shrink: 0; margin-left: auto; }
 .copy-button { background: transparent; border: 1px solid var(--border); color: var(--accent); font-size: .72rem; padding: 8px 10px; }
 
 .support-heading { display: grid; gap: 18px; }

@@ -1,5 +1,6 @@
 const form = document.getElementById('access-form');
 const copyButtons = document.querySelectorAll('.copy-button');
+const generatedCopyButtons = document.querySelectorAll('[data-copy-target]');
 const collapseButtons = document.querySelectorAll('.siap-toggle');
 
 const replaceVowels = (value) => value
@@ -28,7 +29,7 @@ if (form) {
         siapValue.textContent = '—';
         sisValue.textContent = '—';
         credentialsPanel.classList.add('hidden');
-        copyButtons.forEach((button) => { button.disabled = true; });
+        generatedCopyButtons.forEach((button) => { button.disabled = true; });
     };
 
     form.addEventListener('submit', (event) => {
@@ -43,7 +44,7 @@ if (form) {
             sisValue.textContent = `s14p${transformedServerName}-s14p`;
             siapValue.textContent = `s1s${transformedServerName}-s14p`;
             credentialsPanel.classList.remove('hidden');
-            copyButtons.forEach((button) => { button.disabled = false; });
+            generatedCopyButtons.forEach((button) => { button.disabled = false; });
         } catch {
             resetResults();
             urlInput.setCustomValidity('Ingresa una URL válida.');
