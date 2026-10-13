@@ -3,6 +3,138 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Módulo 4 | SSH Tool</title><link rel="icon" type="image/x-icon" href="img/favicon.ico"><link rel="stylesheet" href="styles.css"></head>
 <body><main class="module-page">
 <nav class="site-nav"><a class="brand" href="index.html">SSH<span>/</span>TOOL</a><div class="nav-links"><a class="nav-link" href="index.html">Claves SSH</a><a class="nav-link is-active" href="soporte.html">Soporte técnico</a></div></nav>
-<p class="eyebrow">SCRIPTS SOLUCIONES SIS</p><h1>Módulo 4</h1><p class="intro">Encuentra soluciones a los scripts del módulo 4 del SIS.</p><hr>
-<div><p class="eyebrow">Casos especiales</p><p>Este apartado está preparado para documentar casos especiales que requieren atención adicional.</p></div>
-</main></body></html>
+<p class="eyebrow">SCRIPTS SOLUCIONES SIS</p><h1>Módulo 4</h1><p class="intro">Encuentra soluciones a los ticket en este modulo, si tienes nuevas formas de resolverlos, compártelas con la comunidad.</p><hr>
+<div class="case-card">
+<p class="eyebrow">Casos resueltos del SIS</p>
+<h2>Eliminar distribución de citas de procedimientos</h2>
+<p class="intro">Antes de eliminar una distribución, confirma el empleado, la fecha y el estado de las citas relacionadas. Si existe una cita con un estado distinto de <code>9</code>, detén el proceso y no elimines la distribución.</p>
+
+<h3>1. Buscar al empleado que dará las citas de distribución</h3>
+<pre><code>SELECT *
+FROM mnt_empleado AS me
+WHERE me.nombre ILIKE '%Marta Julia%';</code></pre>
+
+<h3>2. Buscar la distribución por año, día y mes</h3>
+<p>Los valores usados por el SIS son: <code>dia = 1</code> para lunes, <code>mes = 1</code> para enero y <code>yrs = 2026</code> para el año 2026.</p>
+<pre><code>SELECT *
+FROM cit_distribucion_procedimiento
+WHERE yrs = 2027
+  AND dia = 3
+  AND mes = 2
+  AND id_empleado = 94;</code></pre>
+
+<h3>3. Verificar las citas relacionadas</h3>
+<p>La consulta muestra la distribución y sus citas. Una distribución sin citas relacionadas también puede continuar al siguiente paso.</p>
+<pre><code>
+  SELECT * FROM cit_citas_procedimientos ccp where ccp.id_distribucion_procedimiento = 14082 and id_estado = 9;
+</code></pre>
+<p>Solo se puede continuar cuando no hay citas o todas las citas relacionadas tienen <code>id_estado = 9</code>. Si aparece otro estado, no ejecutes ningún <code>DELETE</code>.</p>
+
+</div>
+<div class="case-card">
+<p class="eyebrow">Casos resueltos del SIS</p>
+<h2>Cambiar fórmula obstétrica</h2>
+<p class="intro">Para cambiar la fórmula obstétrica, revisa el historial clínico enlazado a la fórmula y consúltalo en la siguiente tabla.</p>
+
+<pre><code>SELECT * FROM sec_dato_embarazo WHERE id_historial_clinico = 1092683;</code></pre>
+</div>
+<div class="case-card">
+<p class="eyebrow">Casos resueltos del SIS</p>
+<h2>Tipo de evaluación en el egreso del paciente o error en alta (Depósito)</h2>
+<p class="intro">Verifica las siguientes tablas. Si el ingreso no está conectado correctamente con el historial clínico, consulta a soporte qué tipo de historial se debe dejar.</p>
+
+<pre><code>select * from mnt_expediente me where me.numero ='0000-00';
+select * from sec_ingreso si where si.id_expediente =000000;
+select se.id_historial_clinico ,* from sec_egreso se where se.id_ingreso =00000;
+
+select shc.id_ingreso ,* from sec_historial_clinico shc where shc.id_numero_expediente =00000;
+
+select * from sec_egreso se  where se.id_ingreso =000000;
+
+select * from ctl_tipo_historia_clinica cthc;</code></pre>
+</div>
+<div class="case-card">
+<p class="eyebrow">Casos resueltos del SIS</p>
+<h2>Cambiarle diagnóstico al paciente</h2>
+<p class="intro">La tabla principal para consultar el diagnóstico del paciente es <code>sec_diagnostico_paciente</code>. Según el caso, consulta también las tablas de diagnósticos como tipo de diagnóstico junto con el tipo de diagnóstico específico, solicitudes quirúrgicas y reportes quirúrgicos.</p>
+
+<h3>Tabla principal de diagnósticos de los pacientes</h3>
+<pre><code>select * from sec_diagnostico_paciente sdp where sdp.id_historial_clinico = 000000;</code></pre>
+
+<h3>Tablas de diagnósticos según el caso o tabla que haga relacion</h3>
+<pre><code>select * from mnt_cie10 mc where mc.codigo ilike '%z0%';
+
+select * from mnt_ciq mc  where mc.codigo ilike '%89%';</code></pre>
+
+<h3>Solicitudes y reportes quirúrgicos</h3>
+<pre><code>select * from sec_cirugia sc where sc.id_expediente = 00000;
+
+select * from sec_cirugia_reporte scr where scr.id_cirugia = 000;
+
+select * from sec_cirugia_reporte_procedimiento scr where scr.id_cirugia_reporte = 6846;
+
+select * from sec_solicitud_quirurgica ssq where ssq.id = 0000;
+select * from sec_solicitud_quirurgica_procedimiento ssqp where ssqp.id_solicitud_quirurgica = 0000;</code></pre>
+</div>
+<div class="case-card">
+<p class="eyebrow">Casos especiales</p>
+<h2>Script si no sale en alta efectiva</h2>
+<p class="intro">Verifica si el egreso tiene configurado <code>id_tipo_egreso</code>.</p>
+
+<pre><code>WITH    ingresos_unicos AS(
+        SELECT id AS id_ingreso FROM sec_ingreso
+                INTERSECT
+                SELECT id_ingreso FROM sec_egreso
+                    )
+                    SELECT DISTINCT C.numero AS numero_cama,D.numero AS numero_expediente,G.fecha as fecha_ingreso,G.hora AS hora_ingreso,
+                    A.fecha_hora_egreso,H.nombreempleado,D.id as id_expediente,E.id AS id_paciente,
+                    INITCAP(CONCAT_WS(' ', CONCAT(COALESCE(D.numero, ''), ' - '), E.primer_nombre, E.segundo_nombre, E.tercer_nombre, E.primer_apellido, E.segundo_apellido, E.apellido_casada)) AS nombre_paciente,
+                    CASE WHEN B.nombre_ambiente IS NULL THEN I.nombre ELSE B.nombre_ambiente END as nombre_ambiente,
+                    A.id_condicion_persona,A.id AS id_egreso, F.id AS id_mov_paciente,
+                    K.nombreempleado as empleado_alta_efectiva,A.fecha_indicacion_egreso,D.id_paciente,G.id as id_ingreso,
+                    A.fecha_defuncion, A.hora_defuncion, A.fecha_hora_registra fecha_indicada
+                    FROM sec_egreso A
+                    INNER JOIN mnt_aten_area_mod_estab B ON (A.id_aten_area_mod_estab = B.id )
+                    INNER JOIN sec_mov_paciente F ON (F.id_ingreso=A.id_ingreso)
+                    INNER JOIN mnt_camas_servicio C ON ( C.id = F.id_cama_servicio )
+                    INNER JOIN sec_ingreso G ON (G.id = A.id_ingreso )
+                    INNER JOIN ingresos_unicos GG ON (G.id = GG.id_ingreso )
+                    INNER JOIN mnt_expediente D ON ( G.id_expediente = D.id )
+                    INNER JOIN mnt_paciente E ON (D.id_paciente = E.id )
+                    INNER JOIN mnt_empleado H ON (A.id_empleado = H.id)
+                    INNER JOIN ctl_atencion I ON (B.id_atencion = I.id)
+                    LEFT JOIN fos_user_user J ON (A.id_usuario_alta_efectiva = J.id)
+                    LEFT JOIN mnt_empleado K ON (J.id_empleado = K.id)
+                WHERE F.id_tipo_egreso = 3 and d.id = 123307
+                ORDER BY nombre_ambiente,A.fecha_hora_egreso DESC;</code></pre>
+</div>
+                <div class="case-card">
+                <p class="eyebrow">Casos especiales</p>
+                <h2>Resolver HCP completados o completados en otro dispositivo</h2>
+                <p class="intro">Verifica los antecedentes de la paciente, sus embarazos registrados en los CLAP y la conexión correcta entre los ingresos y el CLAP perinatal.</p>
+
+                <h3>Verificar antecedentes de la paciente</h3>
+                <pre><code>select * from mnt_expediente me where me.numero = '000000';
+
+                select * from sec_antecedentes sa where sa.id_paciente = 00000;</code></pre>
+
+                <h3>Buscar y verificar los CLAP perinatales</h3>
+                <pre><code>select * from sec_clap_perinatal scp where scp.id_antecedentes = 41348;
+
+                select * from sec_clap_perinatal scp where scp.id_antecedentes = 000000;
+
+                select * from sec_clap_perinatal scp where scp.id_ingreso = 000000; 
+
+                select * from sec_ingreso si where si.id_clap_perinatal = 00000;</code></pre>
+                <p>Verifica cuántos embarazos tiene la paciente de acuerdo con los CLAP registrados. Si existe un error con parto múltiple, revisa que el campo de múltiple esté activo en <code>true</code> y que <code>numero_muktiple</code> sea mayor a 2.</p>
+                <p>Verificar que los id_clap apunten correctamente a los id_ingreso y viceversa de acuerdo con las fechas de ambos al igual que los sec_historiales_clinicos</p>
+
+                <h3>Tablas relacionadas con los datos de los partos</h3>
+                <pre><code>SELECT * FROM sec_dato_embarazo where id_historial_clinico = 1092683;          -- Aqui esta la formula obstetrica
+                SELECT * FROM sec_clap_perinatal scp;
+                SELECT * FROM sec_partograma sp;
+                SELECT * FROM public.sec_parto_aborto_perinatal;
+                SELECT * FROM sec_nacimiento_perinatal snp;
+                SELECT * FROM sec_recien_nacido_perinatal srnp;</code></pre>
+                </div>
+                </main></body></html>

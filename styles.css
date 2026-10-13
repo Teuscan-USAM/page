@@ -185,6 +185,18 @@ button:hover:not(:disabled) { filter: brightness(1.08); }
 hr { border: 0; border-top: 1px solid var(--border); margin: 28px 0; }
 .module-page > div { margin-top: 22px; }
 .module-page .eyebrow { margin-bottom: 10px; }
+.case-card {
+    background: rgba(17, 19, 24, .92);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
+    margin-top: 22px;
+    padding: 28px;
+}
+.case-card .eyebrow { margin-top: 0; }
+.case-card h2 { margin: 0 0 16px; }
+.case-card h3 { border-top: 1px solid var(--border); margin: 28px 0 12px; padding-top: 22px; }
+.case-card .intro { margin-bottom: 22px; }
 pre {
     background: #0d0f13;
     border: 1px solid var(--border);
