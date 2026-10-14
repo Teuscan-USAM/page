@@ -136,5 +136,11 @@ select * from sec_solicitud_quirurgica_procedimiento ssqp where ssqp.id_solicitu
                 SELECT * FROM public.sec_parto_aborto_perinatal;
                 SELECT * FROM sec_nacimiento_perinatal snp;
                 SELECT * FROM sec_recien_nacido_perinatal srnp;</code></pre>
+
+                <h3>Cambiar el control de edad gestacional</h3>
+                <p>Consulta el control de edad gestacional relacionado con el CLAP perinatal antes de realizar el cambio.</p>
+                <pre><code>SELECT *
+FROM sec_consultas_antenatales_perinatal AS scap
+WHERE scap.id_clap_perinatal = 00000;</code></pre>
                 </div>
                 </main></body></html>

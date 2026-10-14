@@ -48,6 +48,7 @@ SELECT * FROM sec_partograma sp;
 SELECT * FROM public.sec_parto_aborto_perinatal;
 SELECT * FROM sec_nacimiento_perinatal snp;
 SELECT * FROM sec_recien_nacido_perinatal srnp;
+SELECT * FROM sec_consultas_antenatales_perinatal scap where scap.id_clap_perinatal = 0000; -- Guarda la edad gestional 
 
 -- 6. DIAGNOSTICOS, PROCEDIMIENTOS Y CIRUGÍAS
 SELECT * FROM mnt_procedimiento_establecimiento;
