@@ -35,4 +35,19 @@ WHERE id = 25 RETURNING id, estado, updated_at;
 
 DELETE FROM tickets WHERE id = 25 RETURNING id;</code></pre>
 <p><strong>Consejo:</strong> antes de un <code>UPDATE</code> o <code>DELETE</code>, ejecuta el mismo <code>WHERE</code> con <code>SELECT</code>.</p></div>
+
+<div><p class="eyebrow">Descargar bases de datos en producción por medio de SSH</p><p>Utiliza este procedimiento para generar y descargar un respaldo de la base de datos desde el servidor de producción. Reemplaza el nombre de la base y la fecha según corresponda.</p>
+<h3>Paso 1: Ingresar al servidor por SSH</h3>
+<p>Desde una terminal de Ubuntu, conéctate al establecimiento:</p>
+<pre><code>ssh siap@sis-hzacamil.salud.gob.sv</code></pre>
+<h3>Paso 2: Generar el respaldo de la base de datos</h3>
+<p>Después de ingresar por SSH, ejecuta el comando desde la ubicación predeterminada del usuario. No ingreses a la carpeta <code>siaps</code> con <code>cd</code> ni abras PostgreSQL con <code>psql</code>.</p>
+<pre><code>pg_dump -U siap -h localhost -p 5432 -Fc -v -O -f sis_hzacamil_20261201.bk siap</code></pre>
+<p>El archivo <code>sis_hzacamil_20261201.bk</code> debe incluir el nombre de la base y la fecha de descarga.</p>
+<h3>Paso 3: Preparar la carpeta local</h3>
+<p>En tu equipo, abre o crea la carpeta donde guardarás el respaldo de la base de datos (Puede ser windows o Ubuntu).</p>
+<h3>Paso 4: Descargar el respaldo</h3>
+<p>Abre una terminal de Ubuntu dentro de la carpeta local y ejecuta <code>scp</code> usando exactamente el mismo nombre del archivo creado:</p>
+<pre><code>scp siap@sis-hzacamil.salud.gob.sv:sis_hzacamil_20261201.bk .</code></pre>
+<p><strong>Importante:</strong> no omitas el punto (<code>.</code>) al final del comando; indica que el archivo se guardará en la carpeta actual.</p></div>
 </main></body></html>
