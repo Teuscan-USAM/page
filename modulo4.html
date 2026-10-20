@@ -5,6 +5,31 @@
 <nav class="site-nav"><a class="brand" href="index.html">SSH<span>/</span>TOOL</a><div class="nav-links"><a class="nav-link" href="index.html">Claves SSH</a><a class="nav-link is-active" href="soporte.html">Soporte técnico</a></div></nav>
 <p class="eyebrow">SCRIPTS SOLUCIONES SIS</p><h1>Módulo 4</h1><p class="intro">Encuentra soluciones a los ticket en este modulo, si tienes nuevas formas de resolverlos, compártelas con la comunidad.</p><hr>
 <div class="case-card">
+<p class="eyebrow">Consulta de soporte</p>
+<h2>Consultar datos del censo diario</h2>
+<p class="intro">Usa esta consulta para revisar los registros del censo diario relacionados con un expediente. Antes de realizar cualquier modificación, ejecuta primero la consulta y confirma que el expediente, el historial clínico y los datos del censo correspondan al caso reportado.</p>
+
+<h3>Consulta</h3>
+<pre><code>SELECT *
+FROM sec_censo_diario AS t1
+INNER JOIN sec_historial_clinico AS t2
+    ON t2.id = t1.id_sec_historial_clinico
+INNER JOIN mnt_expediente AS t3
+    ON t3.id = t1.id_expediente
+WHERE t3.numero = '626-26';</code></pre>
+
+<h3>¿Qué revisa cada tabla y campo?</h3>
+<ul>
+    <li><code>sec_censo_diario (t1)</code>: tabla principal de los registros del censo diario. Sus campos permiten identificar el registro y enlazarlo con el historial clínico y el expediente.</li>
+    <li><code>sec_historial_clinico (t2)</code>: aporta la información del historial clínico relacionado mediante <code>t2.id = t1.id_sec_historial_clinico</code>.</li>
+    <li><code>mnt_expediente (t3)</code>: aporta los datos del expediente y permite filtrar el caso por su número mediante <code>t3.numero</code>.</li>
+    <li><code>t1.id_sec_historial_clinico</code>: identificador del historial clínico asociado al registro del censo.</li>
+    <li><code>t1.id_expediente</code>: identificador del expediente asociado al registro del censo.</li>
+    <li><code>t3.numero = '626-26'</code>: número de expediente que se desea consultar. Sustitúyelo por el número del caso reportado.</li>
+</ul>
+<p><strong>Importante:</strong> los <code>INNER JOIN</code> solo muestran registros que tienen coincidencia en las tres tablas. Si no aparece información, verifica que el número del expediente sea correcto y que sus relaciones con el censo diario estén completas. No ejecutes <code>UPDATE</code> o <code>DELETE</code> hasta confirmar el <code>id</code> exacto del registro y contar con autorización.</p>
+</div>
+<div class="case-card">
 <p class="eyebrow">Casos resueltos del SIS</p>
 <h2>Eliminar distribución de citas de procedimientos</h2>
 <p class="intro">Antes de eliminar una distribución, confirma el empleado, la fecha y el estado de las citas relacionadas. Si existe una cita con un estado distinto de <code>9</code>, detén el proceso y no elimines la distribución.</p>
