@@ -133,6 +133,38 @@ label, .credential-label, .status-badge, .status-pill {
     margin-top: 10px;
 }
 
+.url-field {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+.url-field input {
+    padding-right: 44px;
+    width: 100%;
+}
+
+.clear-url-button {
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    color: var(--muted);
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 6px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+}
+
+.clear-url-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, .06);
+    color: var(--text);
+    filter: none;
+}
+
 input {
     background: var(--surface-soft);
     border: 1px solid var(--border);
@@ -215,5 +247,5 @@ code { font-family: "SFMono-Regular", Consolas, monospace; }
     .nav-links { flex-wrap: wrap; gap: 10px 14px; }
     main { padding-top: 100px; }
     .input-row { align-items: stretch; flex-direction: column; }
-    .input-row button { width: 100%; }
+    .input-row > button[type="submit"] { width: 100%; }
 }

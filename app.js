@@ -19,6 +19,7 @@ const getHostname = (value) => {
 
 if (form) {
     const urlInput = document.getElementById('url');
+    const clearUrlButton = document.getElementById('clear-url');
     const credentialsPanel = document.getElementById('credentials-panel');
     const sshValue = document.getElementById('ssh-generated');
     const siapValue = document.getElementById('siap-generated');
@@ -31,6 +32,14 @@ if (form) {
         credentialsPanel.classList.add('hidden');
         generatedCopyButtons.forEach((button) => { button.disabled = true; });
     };
+
+    clearUrlButton.addEventListener('click', () => {
+        urlInput.value = '';
+        urlInput.setCustomValidity('');
+        clearUrlButton.hidden = true;
+        resetResults();
+        urlInput.focus();
+    });
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -52,7 +61,14 @@ if (form) {
         }
     });
 
-    urlInput.addEventListener('input', () => { urlInput.setCustomValidity(''); });
+    urlInput.addEventListener('input', () => {
+        urlInput.setCustomValidity('');
+        clearUrlButton.hidden = urlInput.value.length === 0;
+
+        if (urlInput.value.length === 0) {
+            resetResults();
+        }
+    });
 }
 
 copyButtons.forEach((button) => {
