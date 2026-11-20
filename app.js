@@ -100,3 +100,7 @@ collapseButtons.forEach((button) => {
         icon.textContent = isCollapsed ? '−' : '+';
     });
 });
+
+
+
+
