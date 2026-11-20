@@ -104,6 +104,21 @@ select * from sec_solicitud_quirurgica_procedimiento ssqp where ssqp.id_solicitu
 </div>
 <div class="case-card">
 <p class="eyebrow">Casos especiales</p>
+<h2>Quitar bloqueo a usuario en el SIS</h2>
+<p class="intro">Confirma el usuario correcto antes de modificar el bloqueo. Sustituye <code>ID_USUARIO</code> por el identificador obtenido en la consulta.</p>
+
+<h3>Consultar al usuario</h3>
+<pre><code>SELECT *
+FROM public.fos_user_user
+WHERE id = ID_USUARIO;</code></pre>
+
+<h3>Quitar el bloqueo</h3>
+<pre><code>UPDATE public.fos_user_user
+SET "locked" = false
+WHERE id = ID_USUARIO;</code></pre>
+</div>
+<div class="case-card">
+<p class="eyebrow">Casos especiales</p>
 <h2>Script si no sale en alta efectiva</h2>
 <p class="intro">Verifica si el egreso tiene configurado <code>id_tipo_egreso</code>.</p>
 
